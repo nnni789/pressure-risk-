@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pressure Ulcer Risk Calculator</title>
+</head>
+
+<body style="font-family: Arial; text-align: center; background-color:#f5f7fa;">
+
+<h2>Pressure Ulcer Risk Calculator (โปรแกรมคำนวณความเสี่ยงแผลกดทับ)</h2>
+
+<p>Enter weight (kg) (กรอกน้ำหนัก):</p>
+<input type="number" id="weight" value="50">
+
+<p>Select angle (degrees) (เลือกมุม):</p>
+<input type="range" id="angle" min="0" max="90" value="45" oninput="showAngle(this.value)">
+<p>Angle (มุม): <span id="angleValue">45</span>°</p>
+
+<button onclick="calculate()">Calculate</button>
+
+<h3 id="result"></h3>
+<h3 id="advice"></h3>
+<h3 id="problem"></h3>
+
+<script>
+function showAngle(val) {
+    document.getElementById("angleValue").innerHTML = val;
+}
+
+function calculate() {
+    let m = document.getElementById("weight").value;
+    let x = document.getElementById("angle").value;
+
+    let R_base = -0.000102 * Math.pow((x - 45), 2) + 0.707;
+    let R = R_base * (m / 50);
+
+    document.getElementById("result").innerHTML =
+        "Risk (ความเสี่ยง) = " + R.toFixed(3);
+
+    let advice = "";
+    let problem = "";
+
+    if (R < 0.6) {
+        advice = "🟢 Low risk (ความเสี่ยงต่ำ): This position is safe. (ท่านี้ปลอดภัย) Change position every 2 hours (ควรเปลี่ยนท่าทุก 2 ชั่วโมง)";
+        problem = "No major risk (ไม่มีความเสี่ยงรุนแรง), but long duration may cause pressure buildup (แต่อยู่ท่าเดิมนานอาจเกิดแรงกดสะสม)";
+    }
+    else if (R < 0.68) {
+        advice = "🟡 Moderate risk (ความเสี่ยงปานกลาง): Adjust angle (ควรปรับมุม) to <30° or >60°. Change every 1–2 hours (เปลี่ยนท่าทุก 1–2 ชั่วโมง)";
+        problem = "Moderate pressure and shear (แรงกดและแรงเฉือนปานกลาง), may reduce blood flow (ทำให้เลือดไหลเวียนลดลง)";
+    }
+    else {
+        advice = "🔴 High risk (ความเสี่ยงสูง): Change position immediately (ควรเปลี่ยนท่าทันที). Recommended: <30° or >60° (แนะนำมุมต่ำกว่า 30° หรือมากกว่า 60°)";
+        problem = "High pressure and shear (แรงกดและแรงเฉือนสูง) may cause tissue damage (อาจทำให้เนื้อเยื่อเสียหาย) and pressure ulcers (และเกิดแผลกดทับ)";
+    }
+
+    document.getElementById("advice").innerHTML = advice;
+    document.getElementById("problem").innerHTML = problem;
+}
+</script>
+
+</body>
+</html>
